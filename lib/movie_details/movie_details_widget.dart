@@ -14,10 +14,13 @@ class _MovideDetailsWidgetState extends State<MovideDetailsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Tom Clancy`s Without Remorse')),
-      body: ListView(
-        children: const [
-          MovieDetailsMainInfoWidget(),
-        ],
+      body: ColoredBox(
+        color: const Color.fromRGBO(24, 23, 27, 1.0),
+        child: ListView(
+          children: const [
+            MovieDetailsMainInfoWidget(),
+          ],
+        ),
       ),
     );
   }
