@@ -15,7 +15,7 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
           padding: EdgeInsets.all(20.0),
           child: _MovieNameWidget(),
         ),
-        _ScoreWidget(),
+        const _ScoreWidget(),
         const _SummaryWidget(),
         Padding(
           padding: const EdgeInsets.all(10.0),
@@ -25,7 +25,7 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: _DescriptionWidget(),
         ),
-        SizedBox(height: 30),
+        const SizedBox(height: 30),
         _PeopleWidgets(),
       ],
     );
@@ -58,12 +58,12 @@ class _TopPosterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: const [
-        Image(image: AssetImage(AppImages.header_bg)),
+        Image(image: AssetImage(AppImages.headerBg)),
         Positioned(
           top: 20,
           left: 20,
           bottom: 20,
-          child: Image(image: AssetImage(AppImages.header_bg_)),
+          child: Image(image: AssetImage(AppImages.headerBg_)),
         ),
       ],
     );
@@ -77,11 +77,10 @@ class _MovieNameWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return RichText(
       maxLines: 3,
-      textAlign: TextAlign.center,
       text: const TextSpan(
         children: [
           TextSpan(
-              text: 'Tom Clancy`s Without Remorse',
+              text: 'Tom Clancy`s Without Remorse ',
               style: TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
           TextSpan(
               text: '(2021)',

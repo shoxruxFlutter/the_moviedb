@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_moviedb/movie_details/movie_details_main_info_widget.dart';
+import 'package:the_moviedb/movie_details/movie_details_main_screen_cast_widget.dart';
 
 class MovideDetailsWidget extends StatefulWidget {
   final int movieId;
@@ -19,6 +20,8 @@ class _MovideDetailsWidgetState extends State<MovideDetailsWidget> {
         child: ListView(
           children: const [
             MovieDetailsMainInfoWidget(),
+            SizedBox(height: 30),
+            MovieDetailsMainScreenCastWidget(),
           ],
         ),
       ),
