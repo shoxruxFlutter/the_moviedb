@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_moviedb/resources/resources.dart';
+import 'package:the_moviedb/ui/navigation/main_navigation.dart';
 
 class Movie {
   final int id;
@@ -65,7 +66,7 @@ class _MovieListState extends State<MovieList> {
   void _onMovieTap(int index) {
     final id = _movies[index].id;
     Navigator.of(context)
-        .pushNamed('/main_screen/movie_details', arguments: id);
+        .pushNamed(MainNavigationRouteNames.movieDetails, arguments: id);
   }
 
   @override
