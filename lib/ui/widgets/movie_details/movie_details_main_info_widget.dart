@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:the_moviedb/main_screen/test.dart';
+
 import 'package:the_moviedb/resources/resources.dart';
+
+import '../main_screen/test.dart';
 
 class MovieDetailsMainInfoWidget extends StatelessWidget {
   const MovieDetailsMainInfoWidget({super.key});
@@ -26,7 +28,7 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
           child: _DescriptionWidget(),
         ),
         const SizedBox(height: 30),
-        _PeopleWidgets(),
+        const _PeopleWidgets(),
       ],
     );
   }
@@ -56,8 +58,8 @@ class _TopPosterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: const [
+    return const Stack(
+      children: [
         Image(image: AssetImage(AppImages.headerBg)),
         Positioned(
           top: 20,
@@ -101,8 +103,8 @@ class _ScoreWidget extends StatelessWidget {
       children: [
         TextButton(
           onPressed: () {},
-          child: Row(
-            children: const [
+          child: const Row(
+            children: [
               SizedBox(
                 width: 40,
                 height: 40,
@@ -123,7 +125,7 @@ class _ScoreWidget extends StatelessWidget {
         Container(width: 1, height: 15, color: Colors.grey),
         TextButton(
             onPressed: () {},
-            child: Row(
+            child: const Row(
               children: [Icon(Icons.play_arrow), Text('Play Trailer')],
             )),
       ],
@@ -132,7 +134,7 @@ class _ScoreWidget extends StatelessWidget {
 }
 
 class _SummaryWidget extends StatelessWidget {
-  const _SummaryWidget({super.key});
+  const _SummaryWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +170,7 @@ class _PeopleWidgets extends StatelessWidget {
       fontWeight: FontWeight.w400,
       fontSize: 16,
     );
-    return Column(
+    return const Column(
       children: [
         Row(
           mainAxisSize: MainAxisSize.max,
@@ -190,7 +192,7 @@ class _PeopleWidgets extends StatelessWidget {
             )
           ],
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
         Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

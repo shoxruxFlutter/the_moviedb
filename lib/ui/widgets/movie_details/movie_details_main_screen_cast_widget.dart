@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+
 import 'package:the_moviedb/resources/resources.dart';
 
 class MovieDetailsMainScreenCastWidget extends StatelessWidget {
@@ -43,17 +43,17 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
                         )
                       ],
                     ),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    child: const ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
                       clipBehavior: Clip.hardEdge,
                       child: Column(
                         children: [
-                          const Image(image: AssetImage(AppImages.actor)),
+                          Image(image: AssetImage(AppImages.actor)),
                           Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 Text('Steven Yeun'),
                                 SizedBox(height: 7),
                                 Text('Mark Grayson / Invincible (voice)'),
@@ -75,7 +75,7 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
           padding: const EdgeInsets.all(3.0),
           child: TextButton(
             onPressed: () {},
-            child: Text('Full Cast & Crew'),
+            child: const Text('Full Cast & Crew'),
           ),
         )
       ]),

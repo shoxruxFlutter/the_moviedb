@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../resources/resources.dart';
+import '../../../../resources/resources.dart';
 
 class ImageScreen extends StatelessWidget {
   const ImageScreen({super.key});

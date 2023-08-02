@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:the_moviedb/movie_list/movie_list.dart';
-
+import '../movie_list/movie_list.dart';
 import 'test.dart';
 
 class MainScreen extends StatefulWidget {
