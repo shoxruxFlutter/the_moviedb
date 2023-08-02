@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:the_moviedb/domain/api_client/api_client.dart';
+import 'package:the_moviedb/domain/data_providers/session_data_provider.dart';
 
 class AuthModel extends ChangeNotifier {
   final _apiClient = ApiClient();
+  final _sessionDataProvider = SessionDataProvider();
 
   final loginTextController = TextEditingController();
   final passwordTextController = TextEditingController();
@@ -27,8 +31,28 @@ class AuthModel extends ChangeNotifier {
     _errorMessage = null;
     _isAuthProgress = true;
     notifyListeners();
-    final sessionId =
-        await _apiClient.auth(username: login, password: password);
+    String? sessionId;
+
+    try {
+      sessionId = await _apiClient.auth(
+        username: login,
+        password: password,
+      );
+    } catch (e) {
+      _errorMessage = 'Неправильный логин пароль!';
+    }
+    _isAuthProgress = false;
+    if (_errorMessage != null) {
+      notifyListeners();
+      return;
+    }
+    if (sessionId == null) {
+      _errorMessage = 'Неизвестная ошибка, повторите попытку';
+      notifyListeners();
+      return;
+    }
+    await _sessionDataProvider.setSessionId(sessionId);
+    unawaited(Navigator.of(context).pushNamed('/main_screen'));
   }
 }
 
