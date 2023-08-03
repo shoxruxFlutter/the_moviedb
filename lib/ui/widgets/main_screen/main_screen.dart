@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_moviedb/domain/data_providers/session_data_provider.dart';
 import '../movie_list/movie_list.dart';
 import 'test.dart';
 
@@ -23,6 +24,12 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('TMBD'),
+        actions: [
+          IconButton(
+            onPressed: () => SessionDataProvider().setSessionId(null),
+            icon: const Icon(Icons.search),
+          )
+        ],
       ),
       body: IndexedStack(
         index: _selectedTab,
