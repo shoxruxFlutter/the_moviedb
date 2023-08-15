@@ -10,6 +10,9 @@ class MovieListModel extends ChangeNotifier {
   final _movies = <Movie>[];
   List<Movie> get movies => List.unmodifiable(_movies);
   late DateFormat _dateFormat;
+  late int _currentPage;
+  late int _totalPage;
+  var isLoadingProgress = false;
   String _locale = '';
 
   String stringFromDate(DateTime? date) =>
@@ -20,19 +23,37 @@ class MovieListModel extends ChangeNotifier {
     if (_locale == locale) return;
     _locale = locale;
     _dateFormat = DateFormat.yMMMMd(locale);
+    _currentPage = 0;
+    _totalPage = 1;
     _movies.clear;
-    loadMovies();
+    _loadMovies();
   }
 
-  Future<void> loadMovies() async {
-    final movies = await _apiClient.popularMovie(1, _locale);
-    _movies.addAll(movies.movies);
-    notifyListeners();
+  Future<void> _loadMovies() async {
+    if (isLoadingProgress || _currentPage >= _totalPage) return;
+    isLoadingProgress = true;
+    final nextPage = _currentPage + 1;
+
+    try {
+      final movies = await _apiClient.popularMovie(nextPage, _locale);
+      _movies.addAll(movies.movies);
+      _currentPage = movies.page;
+      _totalPage = movies.totalPages;
+      isLoadingProgress = false;
+      notifyListeners();
+    } catch (e) {
+      isLoadingProgress = false;
+    }
   }
 
   void onMovieTap(BuildContext context, int index) {
     final id = _movies[index].id;
     Navigator.of(context)
         .pushNamed(MainNavigationRouteNames.movieDetails, arguments: id);
+  }
+
+  void showeMovieAtIndex(int index) {
+    if (index < movies.length - 1) return;
+    _loadMovies();
   }
 }
