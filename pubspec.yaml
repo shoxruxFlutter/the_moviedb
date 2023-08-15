@@ -31,6 +31,10 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_secure_storage: ^8.0.0
+  json_annotation:
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.18.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -40,6 +44,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  json_serializable:
+  build_runner:
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
