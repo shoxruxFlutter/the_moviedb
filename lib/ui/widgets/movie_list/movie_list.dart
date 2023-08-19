@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:the_moviedb/domain/api_client/api_client.dart';
 import 'package:the_moviedb/library/widgets/inherited/provider.dart';
-import 'package:the_moviedb/resources/resources.dart';
-import 'package:the_moviedb/ui/navigation/main_navigation.dart';
 import 'package:the_moviedb/ui/widgets/movie_list/movie_list_model.dart';
 
 class MovieList extends StatelessWidget {
@@ -13,7 +10,6 @@ class MovieList extends StatelessWidget {
   Widget build(BuildContext context) {
     final model = NotifierProvider.watch<MovieListModel>(context);
     if (model == null) return const SizedBox.shrink();
-
     return Stack(
       children: [
         ListView.builder(
@@ -22,7 +18,7 @@ class MovieList extends StatelessWidget {
           itemCount: model.movies.length,
           itemExtent: 163,
           itemBuilder: (BuildContext context, int index) {
-            model.showeMovieAtIndex(index);
+            model.showedMovieAtIndex(index);
             final movie = model.movies[index];
             final posterPath = movie.posterPath;
             final releaseDate = movie.releaseDate;
@@ -99,12 +95,13 @@ class MovieList extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextField(
+              onChanged: model.searchMovie,
               decoration: InputDecoration(
-            labelText: 'Поиск',
-            filled: true,
-            fillColor: Colors.white.withAlpha(235),
-            border: const OutlineInputBorder(),
-          )),
+                labelText: 'Поиск',
+                filled: true,
+                fillColor: Colors.white.withAlpha(235),
+                border: const OutlineInputBorder(),
+              )),
         ),
       ],
     );
