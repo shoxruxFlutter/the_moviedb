@@ -46,7 +46,11 @@ class _MainScreenState extends State<MainScreen> {
         index: _selectedTab,
         children: [
           const Test(),
-          NotifierProvider(model: movieListModel, child: const MovieList()),
+          NotifierProvider(
+            create: () => movieListModel,
+            isManagingModel: false,
+            child: const MovieList(),
+          ),
           const Text('TV Series page'),
         ],
       ),
