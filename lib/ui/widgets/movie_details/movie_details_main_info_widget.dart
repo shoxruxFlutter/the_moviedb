@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:the_moviedb/domain/api_client/api_client.dart';
+import 'package:the_moviedb/library/widgets/inherited/provider.dart';
 
 import 'package:the_moviedb/resources/resources.dart';
+import 'package:the_moviedb/ui/navigation/main_navigation.dart';
+import 'package:the_moviedb/ui/widgets/movie_details/movie_details_model.dart';
 
+import '../../../domain/entity/movie_details_credits.dart';
 import '../main_screen/test.dart';
 
 class MovieDetailsMainInfoWidget extends StatelessWidget {
@@ -23,24 +28,17 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: _OverviewWidget(),
         ),
-        Padding(
-          padding: const EdgeInsets.all(10.0),
+        const Padding(
+          padding: EdgeInsets.all(10.0),
           child: _DescriptionWidget(),
         ),
         const SizedBox(height: 30),
-        const _PeopleWidgets(),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: _PeopleWidgets(),
+        ),
       ],
     );
-  }
-
-  Text _DescriptionWidget() {
-    return const Text(
-        'An elite Navy SEAL uncovers an international conspiracy while seeking justice for the murder of his pregnant wife.',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w400,
-          fontSize: 16,
-        ));
   }
 
   Text _OverviewWidget() {
@@ -53,21 +51,48 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
   }
 }
 
+class _DescriptionWidget extends StatelessWidget {
+  const _DescriptionWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+
+    return Text(model?.movieDetails?.overview ?? '',
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w400,
+          fontSize: 16,
+        ));
+  }
+}
+
 class _TopPosterWidget extends StatelessWidget {
   const _TopPosterWidget();
 
   @override
   Widget build(BuildContext context) {
-    return const Stack(
-      children: [
-        Image(image: AssetImage(AppImages.headerBg)),
-        Positioned(
-          top: 20,
-          left: 20,
-          bottom: 20,
-          child: Image(image: AssetImage(AppImages.headerBg_)),
-        ),
-      ],
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final posterPath = model?.movieDetails?.posterPath;
+    final backdropPath = model?.movieDetails?.backdropPath;
+
+    return AspectRatio(
+      aspectRatio: 390 / 219,
+      child: Stack(
+        children: [
+          backdropPath != null
+              ? Image.network(ApiClient.imageUrl(backdropPath))
+              : const SizedBox.shrink(),
+          Positioned(
+            top: 20,
+            left: 20,
+            bottom: 20,
+            child: posterPath != null
+                ? Image.network(ApiClient.imageUrl(posterPath))
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -77,17 +102,24 @@ class _MovieNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      maxLines: 3,
-      text: const TextSpan(
-        children: [
-          TextSpan(
-              text: 'Tom Clancy`s Without Remorse ',
-              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
-          TextSpan(
-              text: '(2021)',
-              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
-        ],
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    var year = model?.movieDetails?.releaseDate?.year.toString();
+    year = year != null ? ' ($year)' : '';
+    return Center(
+      child: RichText(
+        maxLines: 3,
+        text: TextSpan(
+          children: [
+            TextSpan(
+                text: model?.movieDetails?.title ?? '',
+                style:
+                    const TextStyle(fontWeight: FontWeight.w800, fontSize: 17)),
+            TextSpan(
+                text: year,
+                style:
+                    const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
+          ],
+        ),
       ),
     );
   }
@@ -98,36 +130,56 @@ class _ScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final movieDetails =
+        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
+    var voteAverage = NotifierProvider.watch<MovieDetailsModel>(context)
+            ?.movieDetails
+            ?.voteAverage ??
+        0;
+    final videos = movieDetails?.videos.results
+        .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
+    final trailerKey = videos?.isNotEmpty == true ? videos?.first.key : null;
+    voteAverage = voteAverage * 10;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         TextButton(
           onPressed: () {},
-          child: const Row(
+          child: Row(
             children: [
               SizedBox(
                 width: 40,
                 height: 40,
                 child: RadialPercentWidget(
-                  percent: 0.72,
-                  fillColor: Color.fromARGB(255, 10, 23, 25),
-                  lineColor: Color.fromARGB(255, 37, 203, 103),
-                  freeColor: Color.fromARGB(255, 25, 54, 31),
+                  percent: voteAverage / 100,
+                  fillColor: const Color.fromARGB(255, 10, 23, 25),
+                  lineColor: const Color.fromARGB(255, 37, 203, 103),
+                  freeColor: const Color.fromARGB(255, 25, 54, 31),
                   lineWidth: 3,
-                  child: Text('72'),
+                  child: Text(voteAverage.toStringAsFixed(0)),
                 ),
               ),
-              SizedBox(width: 10),
-              Text('User Score'),
+              const SizedBox(width: 10),
+              const Text('User Score'),
             ],
           ),
         ),
         Container(width: 1, height: 15, color: Colors.grey),
-        TextButton(
-            onPressed: () {},
-            child: const Row(
-              children: [Icon(Icons.play_arrow), Text('Play Trailer')],
-            )),
+        trailerKey != null
+            ? TextButton(
+                onPressed: () => Navigator.of(context).pushNamed(
+                  MainNavigationRouteNames.movieTrailerWidget,
+                  arguments: trailerKey,
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.play_arrow),
+                    Text('Play Trailer'),
+                  ],
+                ),
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }
@@ -138,14 +190,39 @@ class _SummaryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ColoredBox(
-      color: Color.fromRGBO(22, 21, 25, 1.0),
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    if (model == null) return const SizedBox.shrink();
+    var texts = <String>[];
+    final releaseDate = model.movieDetails?.releaseDate;
+    if (releaseDate != null) {
+      texts.add(model.stringFromDate(releaseDate));
+    }
+    final productionCountries = model.movieDetails?.productionCountries;
+    if (productionCountries != null && productionCountries.isNotEmpty) {
+      texts.add('(${productionCountries.first.iso})');
+    }
+
+    final runtime = model.movieDetails?.runtime ?? 0;
+    final duration = Duration(minutes: runtime);
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    texts.add('${hours}h ${minutes}m');
+    final genres = model.movieDetails?.genres;
+    if (genres != null && genres.isNotEmpty) {
+      var genresNames = <String>[];
+      for (var genr in genres) {
+        genresNames.add(genr.name);
+      }
+      texts.add(genresNames.join(', '));
+    }
+    return ColoredBox(
+      color: const Color.fromRGBO(22, 21, 25, 1.0),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 70),
-        child: Text('R 29/04/2021 (US) 1h 49m Action, Adventure, Thriller, War',
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+        child: Text(texts.join(' '),
             maxLines: 3,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w400,
               fontSize: 16,
@@ -160,60 +237,78 @@ class _PeopleWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    var crew = model?.movieDetails?.credits.crew;
+    if (crew == null || crew.isEmpty) return const SizedBox.shrink();
+    crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
+    var crewChunks = <List<Employee>>[];
+    for (var i = 0; i < crew.length; i += 2) {
+      crewChunks.add(
+        crew.sublist(i, i + 2 > crew.length ? crew.length : i + 2),
+      );
+    }
+    return Column(
+      children: crewChunks
+          .map(
+            (chunk) => Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: _PeopleWidgetsRow(employes: chunk),
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _PeopleWidgetsRow extends StatelessWidget {
+  final List<Employee> employes;
+  const _PeopleWidgetsRow({
+    Key? key,
+    required this.employes,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: employes
+          .map(
+            (employee) => _PeopleWidgetsRowItem(
+              employee: employee,
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _PeopleWidgetsRowItem extends StatelessWidget {
+  final Employee employee;
+  const _PeopleWidgetsRowItem({
+    Key? key,
+    required this.employee,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     const nameStyle = TextStyle(
       color: Colors.white,
-      fontWeight: FontWeight.w400,
       fontSize: 16,
+      fontWeight: FontWeight.w400,
     );
-    const jobTitleStyle = TextStyle(
+    const jobTilteStyle = TextStyle(
       color: Colors.white,
-      fontWeight: FontWeight.w400,
       fontSize: 16,
+      fontWeight: FontWeight.w400,
     );
-    return const Column(
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobTitleStyle),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobTitleStyle),
-              ],
-            )
-          ],
-        ),
-        SizedBox(height: 20),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobTitleStyle),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Stefano Sollima', style: nameStyle),
-                Text('Director', style: jobTitleStyle),
-              ],
-            )
-          ],
-        )
-      ],
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(employee.name, style: nameStyle),
+          Text(employee.job, style: jobTilteStyle),
+        ],
+      ),
     );
   }
 }
