@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:the_moviedb/domain/api_client/api_client.dart';
 import 'package:the_moviedb/library/widgets/inherited/provider.dart';
 
-import 'package:the_moviedb/resources/resources.dart';
 import 'package:the_moviedb/ui/navigation/main_navigation.dart';
 import 'package:the_moviedb/ui/widgets/movie_details/movie_details_model.dart';
 
@@ -41,6 +40,7 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
     );
   }
 
+  // ignore: non_constant_identifier_names
   Text _OverviewWidget() {
     return const Text('Overview',
         style: TextStyle(
@@ -91,6 +91,15 @@ class _TopPosterWidget extends StatelessWidget {
                 ? Image.network(ApiClient.imageUrl(posterPath))
                 : const SizedBox.shrink(),
           ),
+          Positioned(
+              top: 5,
+              right: 5,
+              child: IconButton(
+                onPressed: () => model?.toggleFavorite(),
+                icon: Icon(model?.isFavorite == true
+                    ? Icons.favorite
+                    : Icons.favorite_outline),
+              ))
         ],
       ),
     );

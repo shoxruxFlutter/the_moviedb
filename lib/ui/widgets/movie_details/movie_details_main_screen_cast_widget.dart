@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_moviedb/library/widgets/inherited/provider.dart';
 
-import 'package:the_moviedb/resources/resources.dart';
 import 'package:the_moviedb/ui/widgets/movie_details/movie_details_model.dart';
 
 import '../../../domain/api_client/api_client.dart';

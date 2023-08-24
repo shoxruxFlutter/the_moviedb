@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:the_moviedb/domain/data_providers/session_data_provider.dart';
 import 'package:the_moviedb/library/widgets/inherited/provider.dart';
-import 'package:the_moviedb/ui/widgets/main_screen/main_screen_model.dart';
+
 import 'package:the_moviedb/ui/widgets/movie_list/movie_list_model.dart';
 import '../movie_list/movie_list.dart';
 import 'test.dart';
@@ -31,7 +31,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<MainScreenModel>(context);
+    // final model = NotifierProvider.read<MainScreenModel>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('TMBD'),
