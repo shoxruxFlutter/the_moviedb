@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:the_moviedb/domain/api_client/image_downloader.dart';
 import 'package:the_moviedb/ui/navigation/main_navigation.dart';
 import 'package:the_moviedb/ui/widgets/movie_details/movie_details_model.dart';
-import '../../../domain/entity/movie_details_credits.dart';
 import '../main_screen/test.dart';
 
 class MovieDetailsMainInfoWidget extends StatelessWidget {
